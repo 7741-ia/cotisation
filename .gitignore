@@ -1,0 +1,7 @@
+node_modules/
+*.log
+data.json
+.DS_Store
+/.vscode/
+env/
+*.local

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Installation initiale - Compléter le compte</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Compléter votre compte</h1>
+  </header>
+
+  <section class="card">
+    <p>Bienvenue ! Complétez votre compte en ajoutant des personnes maintenant. Vous pourrez toujours ajouter d'autres membres plus tard.</p>
+    <div class="form-inline">
+      <input type="text" id="memberName" placeholder="Nom de la personne">
+      <input type="number" id="initialAmount" placeholder="Montant initial (ex: 0)" min="0">
+      <input type="number" id="monthlyAmount" placeholder="Mensuelle (ex: 10)" min="0">
+      <button onclick="addMemberWithAmount()" class="btn-primary">Ajouter</button>
+    </div>
+    <p class="hint">Ajoutez les personnes une par une. Quand vous avez terminé, cliquez sur "Aller au tableau".</p>
+    <div style="margin-top:12px">
+      <button onclick="(function(){ localStorage.removeItem('justCreatedUserId'); localStorage.removeItem('justLoggedIn'); window.location.href='dashboard.html'; })()">Aller au tableau</button>
+      <button onclick="(function(){ localStorage.removeItem('justCreatedUserId'); localStorage.removeItem('justLoggedIn'); window.location.href='index.html'; })()">Annuler</button>
+    </div>
+    <script>
+      // show a small hint if user came from login or just-created
+      (function(){
+        try{
+          const justCreated = localStorage.getItem('justCreatedUserId');
+          const justLogged = localStorage.getItem('justLoggedIn');
+          const area = document.querySelector('section.card p');
+          if(justCreated) area.innerText = 'Bienvenue ! Votre compte vient d\'être créé. Complétez votre profil en ajoutant des personnes.';
+          else if(justLogged) area.innerText = 'Vous êtes connecté. Vous pouvez ajouter des personnes ou aller au tableau.';
+        }catch(e){ }
+      })();
+    </script>
+  </section>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

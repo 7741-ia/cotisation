@@ -1,0 +1,11 @@
+{
+  "name": "cotisation-app",
+  "version": "1.0.0",
+  "description": "Petite app de cotisation avec API minimal",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "MIT"
+}

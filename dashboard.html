@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tableau de bord - App de Cotisation</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <nav class="nav-bar">
+                <img id="appIcon" src="assets/cagnotte.svg" alt="Icône cagnotte" width="48" height="48">
+                <h1>Tableau de bord</h1>
+                <div class="user-info">
+                    <span id="userEmail"></span>
+                    <a href="catalogue.html" class="btn-link">Catalogue</a>
+                    <button onclick="logoutUser()">Déconnexion</button>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <div class="dashboard-grid">
+                <!-- Section statistiques -->
+                <section class="stats-section card">
+                    <h2>Statistiques</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">Total des cotisations</span>
+                            <span class="stat-value" id="totalAmount">0 FC</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Membres</span>
+                            <span class="stat-value" id="memberCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Moyenne/membre</span>
+                            <span class="stat-value" id="averageAmount">0 FC</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Ce mois</span>
+                            <span class="stat-value" id="monthlyTotal">0 FC</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Restant mois</span>
+                            <span class="stat-value" id="monthlyRemaining">0 FC</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section ajout membre -->
+                <section class="add-member-section card">
+                    <h2>Ajouter un membre</h2>
+                    <form id="addMemberForm" onsubmit="return false;">
+                        <div class="form-group">
+                            <input type="text" id="memberName" placeholder="Nom du membre" required>
+                            <input type="number" id="initialAmount" placeholder="Montant initial (optionnel)" min="0">
+                            <input type="number" id="monthlyAmount" placeholder="Cotisation mensuelle (ex: 10)" min="0">
+                        </div>
+                        <button onclick="addMemberWithAmount()">Ajouter</button>
+                    </form>
+                </section>
+
+                <!-- Section période -->
+                <section class="period-section card">
+                    <h2>Période</h2>
+                    <div class="form-group">
+                        <select id="startMonth">
+                            <option value="1">Janvier</option>
+                            <option value="2">Février</option>
+                            <option value="3">Mars</option>
+                            <option value="4">Avril</option>
+                            <option value="5">Mai</option>
+                            <option value="6">Juin</option>
+                            <option value="7">Juillet</option>
+                            <option value="8">Août</option>
+                            <option value="9">Septembre</option>
+                            <option value="10">Octobre</option>
+                            <option value="11">Novembre</option>
+                            <option value="12">Décembre</option>
+                        </select>
+                        <select id="startYear">
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                        </select>
+                    </div>
+                </section>
+
+                <!-- Section recherche -->
+                <section class="search-section card">
+                    <h2>Rechercher</h2>
+                    <div class="search-tools">
+                        <input type="text" id="searchMembers" placeholder="Rechercher un membre...">
+                        <select id="sortMembers">
+                            <option value="name">Trier par nom</option>
+                            <option value="amount">Trier par montant</option>
+                            <option value="date">Trier par date</option>
+                            <option value="lastPayment">Dernier paiement</option>
+                        </select>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Section membres -->
+            <section class="members-section card">
+                <h2>Liste des membres</h2>
+                <div class="table-responsive">
+                    <table id="membersTable">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Total</th>
+                                <th>Mensuelle</th>
+                                <th>Ce mois</th>
+                                <th>Restant</th>
+                                <th>Dernier paiement</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rempli dynamiquement -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Section actions -->
+            <section class="actions-section card">
+                <div class="action-buttons">
+                    <button onclick="exportCsv()" class="btn-primary">
+                        <i class="icon-export"></i>Exporter CSV
+                    </button>
+                    <button onclick="triggerImport()" class="btn-secondary">
+                        <i class="icon-import"></i>Importer CSV
+                    </button>
+                    <input type="file" id="importFile" accept=".csv" style="display:none" onchange="handleImport(event)">
+                    <button onclick="toggleTheme()" class="btn-theme" id="themeToggle">
+                        <i class="icon-theme"></i>Mode sombre
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

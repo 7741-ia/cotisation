@@ -1,0 +1,18 @@
+{
+  "adminAccounts": [
+    {
+      "id": 0,
+      "salt": "<salt-hex>",
+      "hash": "<hash-hex>"
+    }
+  ],
+  "members": [
+    {
+      "id": 0,
+      "name": "Example Member",
+      "payments": [],
+      "monthlyAmount": 0,
+      "createdBy": 0
+    }
+  ]
+}

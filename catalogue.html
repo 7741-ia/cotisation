@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Catalogue / Aide - App de Cotisation</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Guide & Catalogue — App de Cotisation</h1>
+      <p class="muted">Créateur : Daniel Amisi Awazi — Version 1.0.0</p>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>Vue d'ensemble</h2>
+        <p>Cet espace sert de catalogue / manuel d'utilisation pour l'application de gestion des cotisations. Vous y trouverez comment créer un compte, ajouter des membres, enregistrer des paiements, exporter et partager les informations.</p>
+      </section>
+
+      <section class="card">
+        <h2>Comment utiliser (pas à pas)</h2>
+        <ol>
+          <li>Créer un compte : sur la page d'accueil, entrez votre email et un mot de passe puis cliquez <strong>S'inscrire</strong>.</li>
+          <li>Compléter le compte : après la création ou à chaque connexion vous êtes redirigé vers la page <em>Compléter votre compte</em> où vous pouvez ajouter les premières personnes et leur montant mensuel.</li>
+          <li>Tableau de bord : cliquez sur <strong>Aller au tableau</strong> pour voir vos membres, totaux et historique des paiements. Seuls les membres que vous avez créés s'affichent dans votre tableau (sauf si vous êtes administrateur).</li>
+          <li>Ajouter un paiement : dans la colonne Actions, cliquez <strong>Ajouter</strong> pour enregistrer un paiement pour un membre.</li>
+          <li>Modifier un membre : en tant que créateur du membre (ou admin), cliquez <strong>Modifier</strong> pour changer le montant total ou la cotisation mensuelle.</li>
+          <li>Exporter / Importer CSV : utilisez les boutons <strong>Exporter CSV</strong> et <strong>Importer CSV</strong> pour sauvegarder ou restaurer des listes de membres. Le CSV contient le total, la mensuelle, payé ce mois et le restant.</li>
+          <li>Partager (vue publique) : les créateurs peuvent générer un lien « lecture seule » pour montrer l'état des paiements à une autre personne sans lui donner le droit de modifier.</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <h2>Administration et sécurité</h2>
+        <ul>
+          <li>Administrateurs : peuvent visualiser et modifier tous les membres. Le mot de passe admin par défaut local est <code>bestking</code> (changez-le en production).</li>
+          <li>Mot de passe oublié : utilisez le lien <em>Mot de passe oublié ?</em> sur la page de connexion pour simuler l'envoi d'un code et réinitialiser votre mot de passe.</li>
+          <li>Données : en mode local toutes les données sont stockées dans <code>localStorage</code>. Si vous utilisez le serveur Node, les données sont persistées dans <code>data.json</code>.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>FAQ rapide</h2>
+        <dl>
+          <dt>Pourquoi je ne vois pas les membres d'un autre utilisateur ?</dt>
+          <dd>Chaque compte a son propre tableau. Seuls le créateur (ou un admin) peut modifier/supprimer ses membres.</dd>
+          <dt>Comment rendre un lien public ?</dt>
+          <dd>Générez un lien de partage depuis le tableau (bouton <em>Partager</em>). Pour que le lien fonctionne partout, il faut persister le token côté serveur ; on peut l'ajouter si vous le souhaitez.</dd>
+        </dl>
+      </section>
+
+      <section class="card">
+        <h2>Changelog</h2>
+        <ul>
+          <li><strong>1.0.0</strong> — Version initiale : gestion des comptes, ajout/mise à jour/suppression des membres, paiements, export/import CSV, partage lecture seule, page d'aide.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Contact et crédits</h2>
+        <p>Créateur : <strong>Daniel Amisi Awazi</strong></p>
+        <p>Version : <strong>1.0.0</strong></p>
+        <p>Remarques / demandes : ajoutez vos retours dans le repo ou contactez l'administrateur du site.</p>
+        <div class="contact">
+          <p>Email : <a href="mailto:danielamisi774@gmail.com">danielamisi774@gmail.com</a></p>
+          <p>Téléphone : <a href="tel:+243995872392">+243 99 587 2392</a></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="card muted">
+      <p>&copy; 2025 — Daniel Amisi Awazi — App de Cotisation — Version 1.0.0</p>
+      <p>Contact : <a href="mailto:danielamisi774@gmail.com">danielamisi774@gmail.com</a> — <a href="tel:+243995872392">+243 99 587 2392</a></p>
+    </footer>
+  </div>
+</body>
+</html>

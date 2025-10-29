@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Vue publique - Cotisation</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Vue publique : cotisations</h1>
+  </header>
+  <section class="card">
+    <div id="viewArea">Chargement...</div>
+    <div style="margin-top:12px"><a href="index.html">Retour</a></div>
+  </section>
+</div>
+
+<script>
+  function escapeHtml(str){ return String(str||'').replace(/[&<>\"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  (function(){
+    try{
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+      if(!token){ document.getElementById('viewArea').innerText = 'Lien invalide (token manquant)'; return; }
+      // try to read members from localStorage
+      const members = JSON.parse(localStorage.getItem('members') || '[]');
+      let member = members.find(m => m.shareToken === token);
+      // if not found, try to fetch from /api/members (best-effort)
+      if(!member){
+        try{
+          fetch('/api/members').then(r=> r.ok ? r.json() : Promise.reject()).then(j=>{
+            const remote = (j.members||[]).find(m=> m.shareToken === token);
+            if(remote) render(remote); else document.getElementById('viewArea').innerText = 'Lien invalide ou expiré.';
+          }).catch(()=>{ document.getElementById('viewArea').innerText = 'Aucun membre trouvé pour ce lien.'; });
+        }catch(e){ document.getElementById('viewArea').innerText = 'Aucun membre trouvé pour ce lien.'; }
+        return;
+      }
+      render(member);
+    }catch(e){ document.getElementById('viewArea').innerText = 'Erreur lors du chargement du lien.'; }
+
+    function render(m){
+      const payments = m.payments || [];
+      const total = payments.reduce((s,p)=> s + (Number(p.amount)||0),0);
+      // month selector uses current month/year
+      const now = new Date(); const selMonth = now.getMonth()+1; const selYear = now.getFullYear();
+      const paidThisMonth = payments.reduce((s,p)=>{ const d = new Date(p.date); return s + ((d.getMonth()+1===selMonth && d.getFullYear()===selYear) ? (Number(p.amount)||0) : 0); },0);
+      const monthly = Number(m.monthlyAmount||0);
+      const remaining = Math.max(0, monthly - paidThisMonth);
+      let html = `<h2>${escapeHtml(m.name)}</h2>`;
+      html += `<div>Montant total payé : <strong>${total} FC</strong></div>`;
+      html += `<div>Mensuelle : <strong>${monthly} FC</strong></div>`;
+      html += `<div>Payé ce mois : <strong>${paidThisMonth} FC</strong></div>`;
+      html += `<div>Restant : <strong>${remaining} FC</strong></div>`;
+      if(payments.length>0){ html += '<h3>Historique des paiements</h3><ul>' + payments.map(p=>`<li>${new Date(p.date).toLocaleString()}: ${Number(p.amount)||0} FC</li>`).join('') + '</ul>'; }
+      document.getElementById('viewArea').innerHTML = html;
+    }
+  })();
+</script>
+</body>
+</html>
