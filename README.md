@@ -27,6 +27,20 @@ git branch -M main
 git push -u origin main
 ```
 
+
+## AI Assistant
+
+This project includes a small embedded assistant widget (`ai-widget.js`). It supports two modes:
+- Local (offline): a lightweight rule-based helper that answers common questions about the app and deployment. Works without any external services.
+- OpenAI (cloud): if you paste your OpenAI API key in the widget at runtime, the assistant can use the OpenAI ChatCompletions API to provide richer responses. Do NOT commit your API key to the repository; the widget stores it in your browser `localStorage` only.
+
+Notes about security and hosting
+- If you host the site on GitHub Pages (static hosting), the AI widget's local mode works fine. The OpenAI mode also works from the browser but requires the user's key and exposes it to the client — for production, prefer a server-side proxy that keeps the key secret.
+- The app's Node server (`server.js`) cannot run on GitHub Pages. If you need server-side persistence (writing `data.json`), deploy the server to a hosting provider (Render, Fly, Heroku, or a VPS) and set environment variables (admin password) there.
+
+If you want, I can:
+- Add a small serverless proxy example (GitHub Actions or a minimal server) and instructions to store the OpenAI key in GitHub Secrets.
+- Provide a GitHub Pages-friendly build that disables server API calls and keeps persistence in `localStorage` so the app works as a static site.
 If you need me to create the remote using the GitHub CLI, tell me and ensure `gh` is authenticated on this machine.
 # App de Cotisation
 
