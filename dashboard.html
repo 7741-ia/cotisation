@@ -16,6 +16,7 @@
                 <div class="user-info">
                     <span id="userEmail"></span>
                     <a href="catalogue.html" class="btn-link">Catalogue</a>
+                    <a href="settings.html" class="btn-link">Paramètres</a>
                     <button onclick="logoutUser()">Déconnexion</button>
                 </div>
             </nav>
@@ -147,7 +148,12 @@
         </main>
     </div>
 
-    <script src="ai-widget.js"></script>
-    <script src="script.js"></script>
+        <!-- Static / API banner (shown when static-only mode is active) -->
+        <div id="staticBanner" style="position:fixed;left:16px;bottom:18px;background:#fff3cd;border:1px solid #ffeeba;padding:10px 14px;border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,0.06);display:none;z-index:9998;font-size:13px;">
+            <strong>Mode statique</strong> — les données sont stockées localement (localStorage). <a id="switchToApi" href="#">Basculer en mode API</a>
+        </div>
+
+        <script src="ai-widget.js"></script>
+        <script src="script.js"></script>
 </body>
 </html>

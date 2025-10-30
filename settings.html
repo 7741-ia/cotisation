@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Paramètres - Cotisation</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .card{max-width:700px;margin:24px auto;padding:18px}
+    .row{display:flex;gap:12px;align-items:center}
+    .hint{color:#666;font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <nav class="nav-bar">
+        <h1>Paramètres</h1>
+        <div class="user-info">
+          <a href="dashboard.html" class="btn-link">Retour</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>Mode d'exécution</h2>
+        <div class="row">
+          <div>
+            <div><strong>Mode détecté :</strong> <span id="detectedMode">—</span></div>
+            <div class="hint">Le mode "static-only" force l'application à utiliser uniquement le stockage local (GitHub Pages compatible).</div>
+          </div>
+        </div>
+        <hr/>
+        <div class="row" style="margin-top:12px">
+          <button id="enableStatic">Activer static-only</button>
+          <button id="disableStatic">Désactiver static-only (utiliser API si disponible)</button>
+        </div>
+        <p class="hint" style="margin-top:12px">Vous pouvez aussi forcer via l'URL en ajoutant <code>?staticOnly=1</code> ou dans la console: <code>localStorage.setItem('staticOnly','1')</code></p>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function detect(){
+      const host = window.location.hostname || '';
+      if(host.endsWith('github.io') || host.includes('githubusercontent.com')) return 'static-only (GitHub Pages)';
+      const ps = new URLSearchParams(window.location.search);
+      if(ps.get('staticOnly') === '1' || ps.get('staticOnly') === 'true') return 'static-only (URL override)';
+      if(localStorage.getItem('staticOnly') === '1' || localStorage.getItem('staticOnly') === 'true') return 'static-only (localStorage)';
+      return 'api (server)';
+    }
+    document.getElementById('detectedMode').innerText = detect();
+    document.getElementById('enableStatic').addEventListener('click', ()=>{ localStorage.setItem('staticOnly','1'); alert('Static-only activé. Rechargez la page.'); });
+    document.getElementById('disableStatic').addEventListener('click', ()=>{ localStorage.removeItem('staticOnly'); alert('Static-only désactivé. Rechargez la page.'); });
+  </script>
+</body>
+</html>

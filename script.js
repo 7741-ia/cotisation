@@ -177,8 +177,14 @@ async function tryApi(){
   if(staticOnly){
     useApi = false;
     console.info('Static-only mode enabled (no server API calls). Persistence will use localStorage.');
-    // show a small banner once to the user when on dashboard
-    try{ if(window.location.pathname.includes('dashboard.html') && !sessionStorage.getItem('seenStaticBanner')){ alert('Mode statique activé : l\'application fonctionne en lecture/écriture locale (localStorage). Le serveur Node (`server.js`) n\'est pas utilisé.'); sessionStorage.setItem('seenStaticBanner','1'); } }catch(e){}
+    // show a small non-intrusive banner once to the user when on dashboard
+    try{
+      if(window.location.pathname.includes('dashboard.html') && !sessionStorage.getItem('seenStaticBanner')){
+        const banner = document.getElementById('staticBanner');
+        if(banner){ banner.style.display = 'block'; const link = document.getElementById('switchToApi'); if(link){ link.addEventListener('click', (ev)=>{ ev.preventDefault(); localStorage.removeItem('staticOnly'); sessionStorage.setItem('seenStaticBanner','1'); location.reload(); }); } }
+        sessionStorage.setItem('seenStaticBanner','1');
+      }
+    }catch(e){}
     return;
   }
   try{
