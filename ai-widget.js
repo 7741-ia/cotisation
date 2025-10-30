@@ -1,7 +1,3 @@
-// Simple AI assistant widget.
-// - Mode "local" : small rule-based assistant (works offline, safe for GitHub Pages)
-// - Mode "openai": forwards user messages to OpenAI ChatCompletions using a user-provided key
-// The user must enter their OpenAI API key at runtime if they want to use the cloud mode.
 
 (function(){
   const css = `
@@ -43,6 +39,7 @@
 
   #aiKeyRow{padding:10px;border-top:1px solid rgba(7,34,77,0.04);font-size:13px}
   #aiKeyRow input{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(7,34,77,0.06)}
+  .fade-out{opacity:0!important;transform:translateY(-8px)!important;transition:opacity .28s ease,transform .28s ease}
   `;
 
   const style = document.createElement('style'); style.innerText = css; document.head.appendChild(style);
@@ -135,14 +132,21 @@
   // initial render of suggestions
   renderSuggestions();
 
-  send.addEventListener('click', async ()=>{ const text = input.value.trim(); if(!text) return; appendMessage(text,'user'); input.value=''; try{
+  send.addEventListener('click', async ()=>{ const text = input.value.trim(); if(!text) return; 
+      // create user message element so we can remove it later
+      const userEl = document.createElement('div'); userEl.className = 'ai-msg user'; const userBubble = document.createElement('span'); userBubble.className='bubble'; userBubble.innerText = text; userEl.appendChild(userBubble); messagesEl.appendChild(userEl); messagesEl.scrollTop = messagesEl.scrollHeight;
+      input.value='';
+      try{
       // First try local responder which only answers site-related questions
       const local = localAnswer(text);
       if(local === null){ // off-topic: localAnswer already rendered suggestions
+        // remove the last user question visually
+        try{ userEl.classList.add('fade-out'); setTimeout(()=> userEl.remove(), 320); }catch(e){}
         return;
       }
       if(local && keyInput.value.trim() === ''){
         appendMessage(local,'bot');
+        try{ userEl.classList.add('fade-out'); setTimeout(()=> userEl.remove(), 320); }catch(e){}
         return;
       }
       // If OpenAI/proxy is configured, show typing indicator and call remote
@@ -151,8 +155,10 @@
         const answer = await callOpenAI(text);
         typing.remove();
         appendMessage(answer,'bot');
-      }catch(err){ typing.remove(); appendMessage('Erreur: '+err.message,'bot'); }
-    }catch(e){ appendMessage('Erreur interne: '+e.message,'bot'); } });
+        // remove the user's question after responding
+        try{ userEl.classList.add('fade-out'); setTimeout(()=> userEl.remove(), 320); }catch(e){}
+      }catch(err){ typing.remove(); appendMessage('Erreur: '+err.message,'bot'); try{ userEl.classList.add('fade-out'); setTimeout(()=> userEl.remove(), 320); }catch(e){} }
+    }catch(e){ appendMessage('Erreur interne: '+e.message,'bot'); try{ userEl.classList.add('fade-out'); setTimeout(()=> userEl.remove(), 320); }catch(ex){} } });
 
   // keyboard enter
   input.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); send.click(); } });
