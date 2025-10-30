@@ -48,11 +48,22 @@
 
   function localAnswer(q){ q = String(q||'').toLowerCase(); if(!q) return "Dis-moi ce que tu veux faire (ex: ajouter membre, exporter CSV, créer compte)."; if(q.includes('ajout')||q.includes('ajouter')||q.includes('nouveau')) return "Pour ajouter un membre, va sur le tableau de bord et utilise le formulaire 'Ajouter membre'. Si vous utilisez la version serveur, le membre sera sauvegardé dans data.json; en mode statique il est stocké dans localStorage."; if(q.includes('export')) return "Cliquez sur Exporter CSV pour télécharger les données. Si vous hébergez sur GitHub Pages, utilisez l'option locale (les exports sont générés côté client)."; if(q.includes('mot de passe')||q.includes('reset')) return "La réinitialisation de mot de passe est simulée dans l'app locale. En production, remplacez-la par un service d'email sécurisé."; if(q.includes('héberg')||q.includes('github')) return "Sur GitHub Pages l'application peut fonctionner en mode statique, mais le serveur Node (`server.js`) ne fonctionnera pas. Pour garder la persistance côté serveur, déployez le serveur sur Render, Fly or Heroku."; return "Je peux aider sur l'utilisation de l'app et expliquer comment déployer. Pour des réponses plus avancées, collez une clé OpenAI dans le champ 'Mode cloud' (optionnel) et changez le mode en openai." }
 
-  async function callOpenAI(prompt){ const key = keyInput.value.trim(); if(!key) throw new Error('Clé OpenAI manquante'); // simple Chat Completions v1
+  async function callOpenAI(prompt){
+    // If a proxy URL is provided via global `window.OPENAI_PROXY_URL`, use it (safer: keeps key on server).
+    const proxy = window.OPENAI_PROXY_URL || '';
+    if(proxy){
+      const res = await fetch(proxy, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ prompt, model: 'gpt-3.5-turbo', max_tokens: 400 }) });
+      if(!res.ok){ const txt = await res.text(); throw new Error('Proxy error '+res.status+': '+txt); }
+      const j = await res.json(); // expect { text: '...' } or { result: '...' }
+      return j.text || j.result || JSON.stringify(j);
+    }
+
+    const key = keyInput.value.trim(); if(!key) throw new Error('Clé OpenAI manquante'); // simple Chat Completions v1
     const body = { model: 'gpt-3.5-turbo', messages:[{role:'user',content:prompt}], max_tokens:400 };
     const res = await fetch('https://api.openai.com/v1/chat/completions',{ method:'POST', headers:{ 'Content-Type':'application/json','Authorization':'Bearer '+key }, body: JSON.stringify(body) });
     if(!res.ok){ const txt = await res.text(); throw new Error('OpenAI error '+res.status+': '+txt); }
-    const j = await res.json(); return j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content || JSON.stringify(j); }
+    const j = await res.json(); return j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content || JSON.stringify(j);
+  }
 
   btn.addEventListener('click', ()=>{ panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex'; input.focus(); });
 

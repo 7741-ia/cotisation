@@ -155,7 +155,32 @@ function saveState(){
   localStorage.setItem('adminAccounts', JSON.stringify(adminAccounts));
 }
 
+// Detect if we should run in static-only mode (GitHub Pages or explicit override)
+function detectStaticOnly(){
+  try{
+    const host = window.location.hostname || '';
+    const path = window.location.pathname || '';
+    // Hosted on GitHub Pages (user.github.io or github.io/*)
+    if(host.endsWith('github.io') || host.includes('githubusercontent.com')) return true;
+    // Allow query override ?staticOnly=1
+    const ps = new URLSearchParams(window.location.search);
+    if(ps.get('staticOnly') === '1' || ps.get('staticOnly') === 'true') return true;
+    // Allow localStorage override (developer convenience)
+    if(localStorage.getItem('staticOnly') === '1' || localStorage.getItem('staticOnly') === 'true') return true;
+    return false;
+  }catch(e){ return false; }
+}
+
 async function tryApi(){
+  // If we detect a static-only hosting (GitHub Pages), skip API probes
+  const staticOnly = detectStaticOnly();
+  if(staticOnly){
+    useApi = false;
+    console.info('Static-only mode enabled (no server API calls). Persistence will use localStorage.');
+    // show a small banner once to the user when on dashboard
+    try{ if(window.location.pathname.includes('dashboard.html') && !sessionStorage.getItem('seenStaticBanner')){ alert('Mode statique activé : l\'application fonctionne en lecture/écriture locale (localStorage). Le serveur Node (`server.js`) n\'est pas utilisé.'); sessionStorage.setItem('seenStaticBanner','1'); } }catch(e){}
+    return;
+  }
   try{
     const res = await fetch('/api/ping');
     if(res.ok) { useApi = true; await loadFromApi(); }
